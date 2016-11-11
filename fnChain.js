@@ -18,7 +18,7 @@
  *         in chain
  *         (@)param {object} data: contains optional data
  *             and results of each function
- *         (@)param {function} breakChain: return this function
+ *         (@)param {function} fnBreak: return this function
  *             anywhere inside your functions to reject the overall
  *             promise and cancel all proceeding function invokations
  *                 (@)param {string} reason: customized reason for
@@ -61,7 +61,7 @@ function fnChain (obj) {
             var result;
 
             if (fns.length) {
-                result = fns[0](data, breakChain);
+                result = fns[0](data, fnBreak);
 
                 fns.shift();
 
@@ -83,7 +83,7 @@ function fnChain (obj) {
             }
         }
 
-        function breakChain (reason) {
+        function fnBreak (reason) {
             return reject({ error: reason || 'Chain was intentionally broken.' });
         }
 
