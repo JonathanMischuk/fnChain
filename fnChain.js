@@ -11,7 +11,7 @@
  * @return {Promise}
  *
  * @param obj:
- *     @property fns {array} manditory array of functions
+ *     @property fns {array} mandatory array of functions
  *     @property data {object} optional reusable data
  *     @property cb {function} optional final callback
  *         that is invoked after all functions
