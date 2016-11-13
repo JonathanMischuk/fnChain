@@ -33,28 +33,67 @@
  *         fn2,
  *         fn3
  *     ],
- *     data: {
+ *     args: {
  *         prop1: 'prop1',
  *         prop2: 'prop2',
  *         prop3: 'prop3'
- *     },
- *     cb: function (data) {
- *         console.log(data);
  *     }
  * };
  *
  *  fnChain(fnChainData);
  */
-function fnChain (obj) {
-    var dataCache = {},
+/*function fnChain (obj) {
+    var results = [],
         fns,
-        cb;
+        args;
+
+    if (obj.hasOwnProperty('fns')) fns = obj.fns;
+    if (obj.hasOwnProperty('args')) args = obj.args;
+
+    return new Promise(function (resolve, reject) {
+        function recurse () {
+            var result;
+
+            console.log(results);
+
+            if (fns.length) {
+                result = fns[0](args, results, fnBreak);
+
+                fns.shift();
+
+                if (result && result.then) {
+                    result.then(function (response) {
+                        if (response) results.push(response);
+
+                        recurse();
+                    });
+                } else {
+                    if (result) results.push(result);
+
+                    return recurse();
+                }
+            } else {
+                console.log('results resolved:', results);
+                resolve(results);
+            }
+        }
+
+        function fnBreak (reason) {
+            return reject({ error: reason || 'Chain was intentionally broken.' });
+        }
+
+        return recurse();
+    });
+}*/
+
+/*function fnChain (obj) {
+    var dataCache = {},
+        fns;
 
     dataCache.results = [];
 
     if (obj.hasOwnProperty('fns')) fns = obj.fns;
-    if (obj.hasOwnProperty('cb')) cb = obj.cb;
-    if (obj.hasOwnProperty('data')) dataCache.data = obj.data;
+    if (obj.hasOwnProperty('args')) dataCache.args = obj.args;
 
     return new Promise(function (resolve, reject) {
         function recurse (data) {
@@ -77,8 +116,6 @@ function fnChain (obj) {
                     return recurse(data);
                 }
             } else {
-                if (cb && typeof cb === 'function') cb(data);
-
                 resolve(data);
             }
         }
@@ -88,6 +125,45 @@ function fnChain (obj) {
         }
 
         return recurse(dataCache);
+    });
+}*/
+
+function fnChain (fns, args) {
+    var results = [];
+
+    return new Promise(function (resolve, reject) {
+        function recurse (results, args) {
+            var result;
+
+            if (fns.length) {
+                result = fns[0](results, args, fnBreak);
+
+                fns.shift();
+
+                if (result && result.then) {
+                    result.then(function (response) {
+                        if (response) results.push(response);
+
+                        recurse(results, args);
+                    });
+                } else {
+                    if (result) results.push(result);
+
+                    return recurse(results, args);
+                }
+            } else {
+                resolve({
+                    results: results,
+                    args: args
+                });
+            }
+        }
+
+        function fnBreak (reason) {
+            return reject({ error: reason || 'Chain was intentionally broken.' });
+        }
+
+        return recurse(results, args);
     });
 }
 
