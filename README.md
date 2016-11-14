@@ -9,32 +9,27 @@ This can be used to control the sometimes pesky flow of asynchronous functions t
 The most basic sample usage:
 
 ```
-fnChain({
-    fns: [
-        httpRequest,
-        syncFn,
-        functionThatReturnsPromise
-    ]
-});
+fnChain([
+    httpRequest,
+    syncFn,
+    functionThatReturnsPromise
+]);
 ```
 
-fnChain accepts an initialization object. The object must have a `fns` property that will contain an array of functions.
+fnChain accepts a mandatory `fns` array that will contain all the functions to be executed.
 
-If you provide a `data` property to the initialization object it will be served to every function in the chain:
+If you provide a `args` object on initialization it will be served to every function in the chain:
 
 ```
-fnChain({
-    fns: [
-        httpRequest,
-        syncFn,
-        functionThatReturnsPromise
-    ],
-    data: {
-        prop: 'prop'
-        someOtherProp: 25,
-        someMethod: function () {
-            return 'something';
-        }
+fnChain([
+    httpRequest,
+    syncFn,
+    functionThatReturnsPromise
+], {
+    prop: 'prop'
+    someOtherProp: 25,
+    someMethod: function () {
+        return 'something';
     }
 });
 ```
@@ -42,10 +37,10 @@ fnChain({
 And one of your functions could be:
 
 ```
-function syncFn (args) {
-    console.log(args.data);
+function syncFn (results, args) {
+    console.log(results, args);
     
-    var something = args.data.someMethod();
+    var something = args.someMethod();
     
     return something + ' else.';
 }
@@ -60,67 +55,34 @@ function httpRequest () {
 }
 ```
 
-Each function will then have access to the entire data object. The data object is attached to the args object which also has the property `results`.
+Each function will then have access to the optional `args` object.
 
-Whatever is returned from the function will be added to a `results` array which is served to every proceeding function.
+Whatever is returned from the function will be added to the `results` array which is served to every proceeding function.
 
-You can also optionally provide a `cb` property as a callback function which will only be called after every function has been executed and retired.
- 
-The callback function also has access to the data object, and most importantly the results array.
-
-Example with callback function:
-
-```
-var global;
-
-fnChain({
-    fns: [
-        httpRequest,
-        syncFn,
-        functionThatReturnsPromise
-    ],
-    data: {
-        prop: 'prop'
-        someOtherProp: 25,
-        someMethod: function () {
-            return 'something';
-        }
-    },
-    cb: function (args) {
-        var weHave = 'We have ' + args.results[1];
-        
-        global = weHave + ' else';
-    }
-});
-```
-
-fnChain also returns a promise that resolves the args object (data object and results array).
+fnChain will return a promise that resolves an new object containing the results array and the args object.
 
 Example returning a promise:
 
 ```
-fnChain({
-    fns: [
-        httpRequest,
-        syncFn,
-        functionThatReturnsPromise
-    ],
-    data: {
-        prop: 'prop'
-        someOtherProp: 25,
-        someMethod: function () {
-            return 'something';
-        }
+fnChain([
+    httpRequest,
+    syncFn,
+    functionThatReturnsPromise
+], {
+    prop: 'prop'
+    someOtherProp: 25,
+    someMethod: function () {
+        return 'something';
     }
-}).then(function (args) {
-    console.log(args);
+}).then(function (results) {
+    console.log(results);
 });
 ```
 
 You can also optionally pass in a `fnBreak` parameter to any function in the chain which can be used to break the function chain and automatically execute the `.catch()` exception method. You can also add a 'reason' or custom message or value to the `fnBreak()`:
 
 ```
-function functionThatReturnsPromise (args, fnBreak) {
+function functionThatReturnsPromise (results, args, fnBreak) {
     if (something > somethingElse) {
         fnBreak('You have exceeded your limit.');
     } else {
@@ -132,21 +94,18 @@ function functionThatReturnsPromise (args, fnBreak) {
 Changes to your fnChain call:
 
 ```
-fnChain({
-    fns: [
-        httpRequest,
-        syncFn,
-        functionThatReturnsPromise
-    ],
-    data: {
-        prop: 'prop'
-        someOtherProp: 25,
-        someMethod: function () {
-            return 'something';
-        }
+fnChain([
+    httpRequest,
+    syncFn,
+    functionThatReturnsPromise
+], {
+    prop: 'prop'
+    someOtherProp: 25,
+    someMethod: function () {
+        return 'something';
     }
-}).then(function (args) {
-    console.log(args);
+}).then(function (results) {
+    console.log(results);
 }).catch(function (reason) {    // new addition
     console.log(reason);
 });
@@ -155,28 +114,26 @@ fnChain({
 You can also declare the initialization object somewhere else:
 
 ```
-function fnChainInit () {
-    return {
-        fns: [
-            httpRequest,
-            syncFn,
-            functionThatReturnsPromise
-        ],
-        data: {
-            prop: 'prop'
-            someOtherProp: 25,
-            someMethod: function () {
-                return 'something';
-            }
-        }
-    }
-}
+var fns = [
+    httpRequest,
+    syncFn,
+    functionThatReturnsPromise
+];
 
-fnChain(fnChainInit()).then(function (args) {
-    console.log(args);
-}).catch(function (reason) {
-    console.log(reason);
-});
+var args = {
+    prop: 'prop'
+    someOtherProp: 25,
+    someMethod: function () {
+        return 'something';
+    }
+};
+
+fnChain(fns, args)
+    .then(function (results) {
+        console.log(results);
+    }).catch(function (reason) {
+        console.log(reason);
+    });
 ```
 
 One thing to note is that after each function in the chain is executed, it is then removed from the `fns` array. This may be something to consider when declaring the initialization object.
