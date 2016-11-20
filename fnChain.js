@@ -32,7 +32,7 @@ function fnChain (fns) {
         if (!fns.length) return cancel('ERR: No functions provided.');
 
         function callback () {
-            var args = [].slice.apply(arguments),
+            var args = [].slice.call(arguments),
                 fn = fns[0];
 
             // concatenate stored results with new arguments
