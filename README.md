@@ -10,7 +10,7 @@ fnChain will return a promise with all the passed argument results. You can manu
 
 Usage example:
 
-```
+```javascript
 fnChain([
     function (results, callback, cancel) {
         callback('something');
