@@ -82,7 +82,7 @@ fnChain([
 You can also optionally pass in a `fnBreak` parameter to any function in the chain which can be used to break the function chain and automatically execute the `.catch()` exception method. You can also add a 'reason' or custom message or value to the `fnBreak()`:
 
 ```
-function functionThatReturnsPromise (results, args, fnBreak) {
+function syncFn (results, args, fnBreak) {
     if (something > somethingElse) {
         fnBreak('You have exceeded your limit.');
     } else {
