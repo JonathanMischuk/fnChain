@@ -29,15 +29,22 @@
 function fnChain (fns, args) {
     var results = [];
 
+    args = args || {};
+
     return new Promise(function (resolve, reject) {
-        if (!fns.length) return fnBreak('ERR: No functions provided.');
+        if (!fns.length) return cancel('ERR: No functions provided.');
 
         function recurse (results, args) {
             var result;
 
             if (fns.length) {
-                result = fns[0](results, args, fnBreak);
 
+                // invoke next function in chain and
+                // pass results, optional args and
+                // cancel/reject promise function
+                result = fns[0](results, args, cancel);
+
+                // remove the current function from chain
                 fns.shift();
 
                 if (result && result.then) {
@@ -46,8 +53,8 @@ function fnChain (fns, args) {
 
                         recurse(results, args);
                     });
-                } else {
-                    if (result) results.push(result);
+                } else if (result) {
+                    results.push(result);
 
                     return recurse(results, args);
                 }
@@ -59,7 +66,9 @@ function fnChain (fns, args) {
             }
         }
 
-        function fnBreak (reason) {
+        // cancel function chain and
+        // immediately reject promise
+        function cancel (reason) {
             return reject({ error: reason || 'Chain was intentionally broken.' });
         }
 
