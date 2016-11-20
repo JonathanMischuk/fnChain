@@ -8,10 +8,9 @@
  * return value to the next function
  * if desired.
  *
- * @return {Promise}
- *
  * @param fns: mandatory array of functions
- * @param args: custom arguments that are passed to all functions in chain
+ *
+ * @return {Promise}
  *
  * example of usage:
  *
@@ -20,59 +19,41 @@
  *      fn1,
  *      fn2,
  *      fn3
- * ],{
- *      prop1: 'prop1',
- *      prop2: 'prop2',
- *      prop3: 'prop3'
+ * ]).then(function (results) {
+ *      console.log(resulst);
+ * }).catch(function (error) {
+ *      console.log(error);
  * });
  */
-function fnChain (fns, args) {
+function fnChain (fns) {
     var results = [];
-
-    args = args || {};
 
     return new Promise(function (resolve, reject) {
         if (!fns.length) return cancel('ERR: No functions provided.');
 
-        function recurse (results, args) {
-            var result;
+        function callback () {
+            var args = [].slice.apply(arguments),
+                fn = fns[0];
+
+            // concatenate stored results with new arguments
+            results = [].concat.call([], results || [], args || []);
 
             if (fns.length) {
-
-                // invoke next function in chain and
-                // pass results, optional args and
-                // cancel/reject promise function
-                result = fns[0](results, args, cancel);
-
-                // remove the current function from chain
                 fns.shift();
 
-                if (result && result.then) {
-                    result.then(function (response) {
-                        if (response) results.push(response);
-
-                        recurse(results, args);
-                    });
-                } else if (result) {
-                    results.push(result);
-
-                    return recurse(results, args);
-                }
+                return fn(results, callback, cancel);
             } else {
-                resolve({
-                    results: results,
-                    args: args
-                });
+                resolve(results);
             }
         }
 
         // cancel function chain and
         // immediately reject promise
         function cancel (reason) {
-            return reject({ error: reason || 'Chain was intentionally broken.' });
+            return reject(reason || 'Chain was intentionally broken.');
         }
 
-        return recurse(results, args);
+        return callback();
     });
 }
 
