@@ -4,7 +4,7 @@ fnChain is a function control flow utility that provides a mechanism for chainin
 
 Whatever arguments you pass into the callback function will be added to a results array and carried through to each function in the chain as the first argument.
 
-The second argument is always the callback function.
+The second argument is always the callback function which must be called to proceed to the next function in the chain.
 
 fnChain will return a promise with all the passed argument results. You can manually reject the returned promise by invoking the cancel function which is passed as the third argument to each function in the chain.
 
