@@ -31,7 +31,7 @@ fnChain([
     }
 ]).then(function (results) {
     console.log(results); // ['something', 'something else', Response]
-}).catch(function (error) {
-    console.log(error);
+}).catch(function (reason) {
+    console.log(reason);
 });
 ```
