@@ -1,18 +1,15 @@
 /**
- * // Function Chain
+ * Function Chain
+ * ------------------------
+ * function and async control
  *
  * author: Jonathan Mischuk
- *
- * function and async control passing
- * response value of promise or the
- * return value to the next function
- * if desired.
  *
  * @param fns: mandatory array of functions
  *
  * @return {Promise}
  *
- * example of usage:
+ * usage example:
  *
  * // Function Chain Data
  * fnChain([
@@ -29,7 +26,7 @@ function fnChain (fns) {
     var results = [];
 
     return new Promise(function (resolve, reject) {
-        if (!fns.length) return cancel('ERR: No functions provided.');
+        if (!fns.length) return cancel('error: no functions were provided for chain.');
 
         function callback () {
             var args = [].slice.call(arguments),
@@ -50,7 +47,7 @@ function fnChain (fns) {
         // cancel function chain and
         // immediately reject promise
         function cancel (reason) {
-            return reject(reason || 'Chain was intentionally broken.');
+            return reject(reason || 'chain was cancelled.');
         }
 
         return callback();
