@@ -21,7 +21,7 @@ fnChain([
         }, 3000);
     },
     function (results, callback, cancel) {
-        http.post('/api/something/', results)
+        http.post('/api/something/', results) // results: ['something', 'something else']
             .then(function (response) {
                 callback(response);
             })
@@ -30,7 +30,7 @@ fnChain([
             });
     }
 ]).then(function (results) {
-    console.log(results);
+    console.log(results); // ['something', 'something else', Response]
 }).catch(function (error) {
     console.log(error);
 });
