@@ -16,13 +16,13 @@
  *
  * // Function Chain Data
  * fnChain([
- *      fn1,
- *      fn2,
- *      fn3
+ *     fn1,
+ *     fn2,
+ *     fn3
  * ]).then(function (results) {
- *      console.log(resulst);
+ *     console.log(resulst);
  * }).catch(function (error) {
- *      console.log(error);
+ *     console.log(error);
  * });
  */
 function fnChain (fns) {
@@ -36,7 +36,7 @@ function fnChain (fns) {
                 fn = fns[0];
 
             // concatenate stored results with new arguments
-            results = [].concat.call([], results || [], args || []);
+            results = [].concat.call([], results, args);
 
             if (fns.length) {
                 fns.shift();
