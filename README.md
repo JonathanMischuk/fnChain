@@ -32,6 +32,6 @@ fnChain([
 ]).then(function (results) {
     console.log(results); // ['something', 'something else', Response]
 }).catch(function (reason) {
-    console.log(reason);
+    console.log(reason); // reason passed into cancel()
 });
 ```
