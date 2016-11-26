@@ -12,16 +12,16 @@ Usage example:
 
 ```javascript
 fnChain([
-    function (results, callback, cancel) {
+    function (callback) {
         callback('something');
     },
-    function (results, callback, cancel) {
+    function (arg1, callback) {
         setTimeout(function () {
-            callback('something else');
+            callback('something else', 'and something more');
         }, 3000);
     },
-    function (results, callback, cancel) {
-        http.post('/api/something/', results) // results: ['something', 'something else']
+    function (arg1, arg2, callback, cancel) {
+        http.post('/api/something/', [arg1, arg2])
             .then(function (response) {
                 callback(response);
             })
@@ -30,7 +30,7 @@ fnChain([
             });
     }
 ]).then(function (results) {
-    console.log(results); // ['something', 'something else', Response]
+    console.log(results); // ['something', 'something else', 'and something more', Response]
 }).catch(function (reason) {
     console.log(reason); // reason passed into cancel()
 });

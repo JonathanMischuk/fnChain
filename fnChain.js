@@ -22,6 +22,7 @@
  *     console.log(error);
  * });
  */
+
 function fnChain (fns) {
     var results = [];
 
@@ -32,13 +33,12 @@ function fnChain (fns) {
             var args = [].slice.call(arguments),
                 fn = fns[0];
 
-            // concatenate stored results with new arguments
             results = [].concat.call([], results, args);
 
             if (fns.length) {
                 fns.shift();
 
-                return fn(results, callback, cancel);
+                return fn.apply(null, [].concat.call([], args, [callback, cancel]));
             } else {
                 resolve(results);
             }
