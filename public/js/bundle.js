@@ -218,7 +218,7 @@
 	 * });
 	 */
 
-	function pipe(fns) {
+	function capture(fns) {
 	    'use strict';
 
 	    var results = [];
@@ -251,7 +251,7 @@
 	    });
 	}
 
-	module.exports = pipe;
+	module.exports = capture;
 
 /***/ },
 /* 4 */
