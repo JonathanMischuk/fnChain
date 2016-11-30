@@ -48,7 +48,7 @@
 
 	var chain = __webpack_require__(1),
 	    queue = new chain.Queue(),
-	    req = __webpack_require__(4),
+	    req = __webpack_require__(5),
 	    button = document.getElementById('button');
 
 	// function request1 (results, args) {
@@ -116,7 +116,8 @@
 	var chain = {};
 
 	chain.pipe = __webpack_require__(2);
-	chain.Queue = __webpack_require__(3);
+	chain.capture = __webpack_require__(3);
+	chain.Queue = __webpack_require__(4);
 
 	module.exports = chain;
 
@@ -145,9 +146,9 @@
 	 *     fn2,
 	 *     fn3
 	 * ]).then(function (results) {
-	 *     console.log(resulst);
-	 * }).catch(function (error) {
-	 *     console.log(error);
+	 *     console.log(results);
+	 * }).catch(function (reason) {
+	 *     console.log(reason);
 	 * });
 	 */
 
@@ -192,20 +193,71 @@
 
 	'use strict';
 
-	function defer() {
-	    var resolve, reject, promise;
+	/**
+	 * Function Chain: Capture
+	 * ------------------------
+	 * function and async control
+	 *
+	 * author: Jonathan Mischuk
+	 *
+	 * @param fns: mandatory array of functions
+	 *
+	 * @return {Promise}
+	 *
+	 * usage example:
+	 *
+	 * // Function Chain Data
+	 * fnChain.pipe([
+	 *     fn1,
+	 *     fn2,
+	 *     fn3
+	 * ]).then(function (results) {
+	 *     console.log(results);
+	 * }).catch(function (reason) {
+	 *     console.log(reason);
+	 * });
+	 */
 
-	    promise = new Promise(function () {
-	        resolve = arguments[0];
-	        reject = arguments[1];
+	function pipe(fns) {
+	    'use strict';
+
+	    var results = [];
+
+	    return new Promise(function (resolve, reject) {
+	        if (!fns.length) return cancel('error: no functions were provided for chain.');
+
+	        function callback() {
+	            var args = [].slice.call(arguments),
+	                fn = fns[0];
+
+	            results = [].concat.call([], results, args);
+
+	            if (fns.length) {
+	                fns.shift();
+
+	                return fn.call(null, callback, cancel);
+	            } else {
+	                resolve(results);
+	            }
+	        }
+
+	        // cancel function chain and
+	        // immediately reject promise
+	        function cancel(reason) {
+	            return reject(reason || 'chain was cancelled.');
+	        }
+
+	        return callback();
 	    });
-
-	    return {
-	        resolve: resolve,
-	        reject: reject,
-	        promise: promise
-	    };
 	}
+
+	module.exports = pipe;
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	'use strict';
 
 	/**
 	 * Function Chain: Queue
@@ -278,7 +330,7 @@
 	module.exports = Queue;
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -295,9 +347,9 @@
 	  root = this;
 	}
 
-	var Emitter = __webpack_require__(5);
-	var requestBase = __webpack_require__(6);
-	var isObject = __webpack_require__(7);
+	var Emitter = __webpack_require__(6);
+	var requestBase = __webpack_require__(7);
+	var isObject = __webpack_require__(8);
 
 	/**
 	 * Noop.
@@ -309,7 +361,7 @@
 	 * Expose `request`.
 	 */
 
-	var request = module.exports = __webpack_require__(8).bind(null, Request);
+	var request = module.exports = __webpack_require__(9).bind(null, Request);
 
 	/**
 	 * Determine XHR.
@@ -1260,7 +1312,7 @@
 
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1429,13 +1481,13 @@
 
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Module of mixed-in functions shared between node and client code
 	 */
-	var isObject = __webpack_require__(7);
+	var isObject = __webpack_require__(8);
 
 	/**
 	 * Clear previous timeout.
@@ -1807,7 +1859,7 @@
 
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
 	/**
@@ -1826,7 +1878,7 @@
 
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports) {
 
 	// The node and browser modules expose versions of this with the
