@@ -1,17 +1,17 @@
-### fnChain
+### funnel
 
-fnChain is a function control flow utility that provides a mechanism for chaining asynchronous functions and normal synchronous functions.
+funnel is a function control flow utility for taming asynchronous and synchronous functions.
 
-Whatever arguments you pass into the callback function will be added to a results array and carried through to each function in the chain as the first argument.
+Whatever arguments you pass into the callback function will be added to a results array, and depending on the method, carried through to each function in the funnel as the first arguments.
 
-The second argument is always the callback function which must be called to proceed to the next function in the chain.
+The callback function is always after the arguments, and it must be called to proceed to the next function in the funnel.
 
-fnChain will return a promise with all the passed argument results. You can manually reject the returned promise by invoking the cancel function which is passed as the third argument to each function in the chain.
+funnel will return a promise with all the passed argument results. You can manually reject the returned promise by invoking the cancel function which is passed as the last argument to each function in the funnel.
 
 Usage example:
 
 ```javascript
-fnChain([
+funnel.pipe([
     function (callback) {
         callback('something');
     },

@@ -1,22 +1,7 @@
-var chain = require('../lib'),
-    queue = new chain.Queue(),
+var funnel = require('../lib'),
+    queue = new funnel.queue(),
     req = require('superagent'),
     button = document.getElementById('button');
-
-// function request1 (results, args) {
-//     console.log(results, args);
-//     return 'something';//req('POST', '/api/request1/');
-// }
-//
-// function request2 (results, args) {
-//     console.log(results, args);
-//     return req('POST', '/api/request2/');
-// }
-//
-// function request3 (results, args) {
-//     console.log(results, args);
-//     return req('POST', '/api/request3/');
-// }
 
 function request1 (callback) {
     callback('something');
@@ -48,7 +33,7 @@ function clickMe () {
         request4
     ];
 
-    chain.funnel(fns).then(function (results) {
+    funnel.bucket(fns).then(function (results) {
         console.log(results);
         console.log('done now!');
     }).catch(function (err) {

@@ -46,25 +46,10 @@
 
 	'use strict';
 
-	var chain = __webpack_require__(1),
-	    queue = new chain.Queue(),
+	var funnel = __webpack_require__(1),
+	    queue = new funnel.queue(),
 	    req = __webpack_require__(5),
 	    button = document.getElementById('button');
-
-	// function request1 (results, args) {
-	//     console.log(results, args);
-	//     return 'something';//req('POST', '/api/request1/');
-	// }
-	//
-	// function request2 (results, args) {
-	//     console.log(results, args);
-	//     return req('POST', '/api/request2/');
-	// }
-	//
-	// function request3 (results, args) {
-	//     console.log(results, args);
-	//     return req('POST', '/api/request3/');
-	// }
 
 	function request1(callback) {
 	    callback('something');
@@ -91,7 +76,7 @@
 	function clickMe() {
 	    var fns = [request1, request2, request3, request4];
 
-	    chain.funnel(fns).then(function (results) {
+	    funnel.bucket(fns).then(function (results) {
 	        console.log(results);
 	        console.log('done now!');
 	    }).catch(function (err) {
@@ -107,13 +92,13 @@
 
 	'use strict';
 
-	var chain = {};
+	var funnel = {};
 
-	chain.pipe = __webpack_require__(2);
-	chain.funnel = __webpack_require__(3);
-	chain.queue = __webpack_require__(4);
+	funnel.pipe = __webpack_require__(2);
+	funnel.bucket = __webpack_require__(3);
+	funnel.queue = __webpack_require__(4);
 
-	module.exports = chain;
+	module.exports = funnel;
 
 /***/ },
 /* 2 */
@@ -122,7 +107,7 @@
 	'use strict';
 
 	/**
-	 * Function Chain: Pipe
+	 * Funnel: Pipe
 	 * ------------------------
 	 * function and async control
 	 *
@@ -130,12 +115,11 @@
 	 *
 	 * @param fns: mandatory array of functions
 	 *
-	 * @return {Promise}
+	 * @returns {Promise}
 	 *
 	 * usage example:
 	 *
-	 * // Function Chain Data
-	 * fnChain.pipe([
+	 * funnel.pipe([
 	 *     fn1,
 	 *     fn2,
 	 *     fn3
@@ -188,7 +172,7 @@
 	'use strict';
 
 	/**
-	 * Function Chain: Funnel
+	 * Funnel: Bucket
 	 * ------------------------
 	 * function and async control
 	 *
@@ -196,12 +180,11 @@
 	 *
 	 * @param fns: mandatory array of functions
 	 *
-	 * @return {Promise}
+	 * @returns {Promise}
 	 *
 	 * usage example:
 	 *
-	 * // Function Chain Data
-	 * fnChain.pipe([
+	 * funnel.bucket([
 	 *     fn1,
 	 *     fn2,
 	 *     fn3
@@ -212,7 +195,7 @@
 	 * });
 	 */
 
-	function funnel(fns) {
+	function bucket(fns) {
 	    'use strict';
 
 	    var results = [];
@@ -245,7 +228,7 @@
 	    });
 	}
 
-	module.exports = funnel;
+	module.exports = bucket;
 
 /***/ },
 /* 4 */
@@ -254,25 +237,26 @@
 	'use strict';
 
 	/**
-	 * Function Chain: Queue
+	 * Funnel: Queue
 	 * ------------------------
 	 * function and async control
 	 *
 	 * author: Jonathan Mischuk
 	 *
-	 * @return {Function}
+	 * @returns {Function}
 	 *
 	 * usage example:
 	 *
-	 * // Function Chain Data
-	 * fnChain.pipe([
+	 * var queue = funnel.queue();
+	 *
+	 * queue([
 	 *     fn1,
 	 *     fn2,
 	 *     fn3
 	 * ]).then(function (results) {
-	 *     console.log(resulst);
-	 * }).catch(function (error) {
-	 *     console.log(error);
+	 *     console.log(results);
+	 * }).catch(function (reason) {
+	 *     console.log(reason);
 	 * });
 	 */
 
