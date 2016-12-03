@@ -1,8 +1,9 @@
-'use strict';
+var gulp = require('gulp'),
+    fs = require('fs');
 
-var gulp = require('gulp');
-
-require('./gulp/bundle');
+fs.readdirSync(__dirname + '/gulp').forEach(function (dir) {
+    require('./gulp/' + dir);
+});
 
 gulp.task('watch:bundle', ['bundle'], function () {
     gulp.watch([

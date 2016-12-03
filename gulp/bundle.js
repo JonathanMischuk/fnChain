@@ -1,5 +1,3 @@
-'use strict';
-
 var gulp = require('gulp'),
     webpack = require('gulp-webpack'),
     concat = require('gulp-concat');

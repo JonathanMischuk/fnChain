@@ -131,8 +131,6 @@
 	 */
 
 	function pipe(fns) {
-	    'use strict';
-
 	    var results = [];
 
 	    return new Promise(function (resolve, reject) {
@@ -196,8 +194,6 @@
 	 */
 
 	function bucket(fns) {
-	    'use strict';
-
 	    var results = [];
 
 	    return new Promise(function (resolve, reject) {
@@ -261,8 +257,6 @@
 	 */
 
 	function queue() {
-	    'use strict';
-
 	    var rejects = [];
 
 	    return function (fns) {
