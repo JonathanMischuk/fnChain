@@ -3,7 +3,7 @@ var gulp = require('gulp'),
     concat = require('gulp-concat');
 
 gulp.task('bundle', function () {
-    return gulp.src('app/main.js')
+    return gulp.src('demo/main.js')
         .pipe(webpack(require('../webpack.config')))
         .pipe(concat('bundle.js'))
         .pipe(gulp.dest('public/js'))

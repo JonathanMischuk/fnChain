@@ -7,7 +7,7 @@ fs.readdirSync(__dirname + '/gulp').forEach(function (dir) {
 
 gulp.task('watch:bundle', ['bundle'], function () {
     gulp.watch([
-        'app/**/*.js',
+        'demo/**/*.js',
         'lib/**/*.js'
     ], ['bundle']);
 });
